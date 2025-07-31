@@ -85,6 +85,12 @@ export const executeMethodMap = {
       optional: ['elementId', 'x', 'y', 'duration'],
     },
   },
+  'mobile: multipleClickGesture': {
+    command: 'mobileMultipleClickGesture',
+    params: {
+      optional: ['elementId', 'x', 'y', 'times'],
+    },
+  },
   'mobile: pinchCloseGesture': {
     command: 'mobilePinchCloseGesture',
     params: {
@@ -176,6 +182,13 @@ export const executeMethodMap = {
     command: 'pressCombineKeys',
     params: {
       required: ['keycode']
+    },
+  },
+  'mobile: inputText': {
+    command: 'inputText',
+    params: {
+      required: ['text'],
+      optional: ['x', 'y'],
     },
   },
   'getScreenshot': {
