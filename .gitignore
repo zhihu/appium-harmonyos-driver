@@ -1,0 +1,9 @@
+node_modules
+build
+*.log
+.vscode
+package-lock.json*
+.yalc
+yalc.lock
+.idea
+.venv
