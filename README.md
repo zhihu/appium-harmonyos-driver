@@ -14,15 +14,12 @@ npm i appium -g
 
 ### 安装appium-harmonyos-driver
 
-1. 克隆本项目到本地（避免保存在中文路径下）
-```shell
-git clone https://gitcode.com/OpenHarmonyToolkitsPlaza/appium_harmonyos_driver.git
-```
-2. 从本项目的发行版本里，下载最新版本的hypium-driver（避免保存在中文路径下）
+1. 下载DevEco Testing Hypium {version} Release，https://developer.huawei.com/consumer/cn/download/
+2. 解压找到hypium-js-{version}.zip，解压安装hypium-{version}.tgz
 3. 在本项目的路径下，新建终端控制台
 4. 运行命令，安装hypium-driver
 ```shell
-npm install /path/to/hypium-driver-{version}.tgz
+npm install /path/to/hypium-{version}.tgz
 ```
 5. 运行命令，安装项目的依赖
 ```shell
