@@ -138,6 +138,17 @@ driver.find_element('text', '搜索设置项').click()
 ```python
 driver.find_element("type", "SearchField").send_keys("exit simple 测试文本")
 ```
+参数说明：
+- text, 需要输入的内容
+- x, 需要点击的坐标x(可选)
+- y, 需要点击的坐标y(可选)
+- 如果处于焦点状况，无需指定坐标
+, 处于非焦点状态需要指定坐标, 会先点击后获取焦点，再输入文本
+
+```python
+driver.execute_script('mobile: inputText', {'text': '123'})
+driver.execute_script('mobile: inputText', {'text': '123', 'x': 100, 'y': 200})
+```
 
 ## 手势接口
 
@@ -188,6 +199,23 @@ driver.execute_script('mobile: longClickGesture', {'x': 500, 'y': 600, 'duration
 # 使用方式3
 el = driver.find_element('text', 'xxx')
 driver.execute_script('mobile: longClickGesture', {'elementId': el.id})
+```
+
+### 多次点击
+参数说明：
+- elementId, 控件Id。若传参未包含控件Id，则必须提供坐标。若传参同时包含控件Id和坐标，那么传入的坐标将会被忽略
+- x, 偏移坐标x
+- y, 偏移坐标y
+- times, 点击次数 默认3次
+# 使用方式1
+driver.execute_script('mobile: multipleClickGesture', {'x': 500, 'y': 600})
+
+# 使用方式2
+driver.execute_script('mobile: multipleClickGesture', {'x': 500, 'y': 600, 'times': 4})
+
+# 使用方式3
+el = driver.find_element('text', 'xxx')
+driver.execute_script('mobile: multipleClickGesture', {'elementId': el.id})
 ```
 
 ### drag

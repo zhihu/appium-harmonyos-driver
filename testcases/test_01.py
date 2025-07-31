@@ -234,6 +234,27 @@ class TestAppium(unittest.TestCase):
         # self.driver.execute_script(
         #     'mobile: longClickGesture', {'elementId': el.id})
 
+    def test_gesture_multipleclick(self):
+        """多次点击
+        elementId: 被点击的控件ID，若缺少控件ID，需指定点击坐标
+        x: 控件x坐标
+        y: 控件y坐标
+        times：点击次数 默认3次
+        """
+        # 使用方式1
+        self.driver.execute_script(
+            'mobile: multipleClickGesture', {'x': 900, 'y': 450})
+
+        # 使用方式2
+        self.driver.execute_script(
+            'mobile: multipleClickGesture', {'x': 900, 'y': 450, 'times': 4})
+
+        # 使用方式3
+        # 使用方式2
+        el = self.driver.find_element('text', value='蓝牙')
+        self.driver.execute_script(
+            'mobile: multipleClickGesture', {'elementId': el.id})
+
     def test_gesture_drag(self):
         """拖拽。测试场景：打开设置，进入屏幕亮度调节界面
         elementId: 被拖动的控件ID，若缺少控件ID，需指定起始坐标
@@ -315,6 +336,17 @@ class TestAppium(unittest.TestCase):
         ret = self.driver.stop_recording_screen()
         with open('D:\\test.mp4', 'wb') as mp4_file:
             mp4_file.write(base64.b64decode(ret))
+
+
+    def test_intputText(self):
+        # 输入文本
+        # 使用方式1
+        # 直接输入文本，需要有焦点的
+        self.driver.execute_script('mobile: inputText', {'text': '你好'})
+
+        # 使用方式2
+        # 自动点击位置后，输入文本(自动获取焦点)
+        self.driver.execute_script('mobile: inputText', {'text': '你好', 'x': 518, 'y': 570})
 
 
 if __name__ == '__main__':
