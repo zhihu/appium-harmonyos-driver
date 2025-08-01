@@ -210,6 +210,7 @@ driver.execute_script('mobile: longClickGesture', {'elementId': el.id})
 - x, 偏移坐标x
 - y, 偏移坐标y
 - times, 点击次数 默认3次
+```python
 # 使用方式1
 driver.execute_script('mobile: multipleClickGesture', {'x': 500, 'y': 600})
 
