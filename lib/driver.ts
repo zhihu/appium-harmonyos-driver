@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import type {
+  AppiumServer,
   DriverCaps,
   DriverData,
   DriverOpts,
@@ -12,10 +12,9 @@ import type {
 import { Chromedriver } from 'appium-chromedriver';
 import { BaseDriver } from 'appium/driver';
 import { util } from 'appium/support';
-import { LRUCache } from 'lru-cache';
-import { executeMethodMap } from './method-map';
-import HARMONY_DRIVER_CONSTRAINTS, { type HarmonyDriverConstraints } from './constraints';
 import { UiComponent, UiDriver } from 'hypium-driver';
+import _ from 'lodash';
+import { LRUCache } from 'lru-cache';
 import {
   defaultContextName,
   getContexts,
@@ -30,6 +29,19 @@ import {
 } from './commands/context/context';
 import { execute, executeMobile } from './commands/execute';
 import commands from './commands/index';
+import {
+  assignBiDiLogListener,
+  GET_SERVER_LOGS_FEATURE,
+  getLog,
+  getLogTypes,
+  nativeLogEntryToSeleniumEntry,
+  startLogsBroadcast,
+  stopLogsBroadcast,
+  supportedLogTypes,
+} from './commands/log';
+import { LogListener } from './commands/types';
+import HARMONY_DRIVER_CONSTRAINTS, { type HarmonyDriverConstraints } from './constraints';
+import { executeMethodMap } from './method-map';
 
 // NO_PROXY contains the paths that we never want to proxy to chromedriver.
 // This part copy from UiAutomator2
@@ -163,6 +175,9 @@ class HarmonyDriver
   proxyCommand?: ExternalDriver['proxyCommand'];
   proxyReqRes?: (...args: any) => any;
 
+  _bidiServerLogListener?: (...args: any[]) => void;
+  _hilogWebsocketListener?: LogListener;
+
   constructor(opts: InitialOpts = {} as InitialOpts, shouldValidateCaps = true) {
     super(opts, shouldValidateCaps);
 
@@ -196,28 +211,57 @@ class HarmonyDriver
     w3cCaps2?: W3CHarmonyDriverCaps,
     w3cCaps3?: W3CHarmonyDriverCaps,
     driverData?: DriverData[]): Promise<[string, any]> {
-    this.log.debug(`Creating harmony session`);
+    this.log.debug('Creating harmony session');
     const [sessionId, caps] = await super.createSession(w3cCaps1, w3cCaps2, w3cCaps3, driverData);
     this.caps = caps;
-    this.driver = await UiDriver.connect(caps?.udid);
-    if (caps?.getDeviceLogs) {
-      // 开启日志抓取任务
-      await this.driver.System.startHilogTask();
+    this.driver = await UiDriver.connect(caps);
+    if (!caps?.skipHilogCapture) {
+      await this.driver.hilog.startHilog();
     }
 
     // 当参数中配置package和activity后，自动拉起对应app
-    if(caps?.appPackage && caps?.appActivity) {
+    if (caps?.appPackage && caps?.appActivity) {
       await this.driver.startApp(caps.appPackage, caps.appActivity);
     }
 
+    if (this.isFeatureEnabled(GET_SERVER_LOGS_FEATURE)) {
+      [, this._bidiServerLogListener] = this.assignBiDiLogListener(
+        this.log.unwrap(), {
+        type: 'server',
+        srcEventName: 'log',
+        entryTransformer: nativeLogEntryToSeleniumEntry,
+      }
+      );
+    }
     return [sessionId, caps];
   }
 
-  async deleteSession() {
-    this.log.debug(`Deleting harmony session`);
+  override async deleteSession(sessionId?: string | null) {
+    this.log.debug('Deleting harmony session');
+    if (this.server) {
+      await this.removeAllSessionWebSocketHandlers(this.server, sessionId);
+    }
+    try {
+      this.componentCache.clear();
+      this.driver?.disconnect();
+      await this.driver?.hilog.stopHilog();
+    } catch (e) {
+      this.log.warn(`Deleting harmony session error. Original error: ${e.message}`);
+    }
+    if (this._bidiServerLogListener) {
+      this.log.unwrap().off('log', this._bidiServerLogListener);
+    }
     await super.deleteSession();
-    this.componentCache.clear();
-    this.driver?.disconnect();
+  }
+
+  async removeAllSessionWebSocketHandlers(server: AppiumServer, sessionId?: string | null) {
+    if (!server || !_.isFunction(server.getWebSocketHandlers)) {
+      return;
+    }
+    const activeHandlers = await server.getWebSocketHandlers(sessionId);
+    for (const pathname of _.keys(activeHandlers)) {
+      await server.removeWebSocketHandler(pathname);
+    }
   }
 
   canProxy() {
@@ -240,6 +284,13 @@ class HarmonyDriver
 
   execute = execute;
   executeMobile = executeMobile;
+
+  assignBiDiLogListener = assignBiDiLogListener;
+  getLogTypes = getLogTypes;
+  getLog = getLog;
+  startLogsBroadcast = startLogsBroadcast;
+  stopLogsBroadcast = stopLogsBroadcast;
+  supportedLogTypes = supportedLogTypes;
 
   defaultContextName = defaultContextName;
   getCurrentContext = getCurrentContext;

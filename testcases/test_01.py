@@ -11,12 +11,6 @@ capabilities = {
     'appium:automationName': 'harmonyos',
     # 1.可选在指定SN的设备上运行
     # 'appium:udid': '8VT5T21601007829',
-
-    # 2.可选是否抓取设备日志, True/False
-    # 'appium:catchDeviceLogs': True,
-
-    # 3.可选将设备日志拉到指定目录（适用于用例运行环境和设备接入环境是在同一台电脑），若未指定路径，则会返回日志的zip压缩文件流
-    # 'appium:getDeviceLogsToPath': 'D:\\test',
 }
 
 appium_server_url = 'http://localhost:4723'
@@ -308,27 +302,6 @@ class TestAppium(unittest.TestCase):
         # self.driver.execute_script('mobile: swipeHome')
 
         # self.driver.execute_script('mobile: slideScreen', {'direction': 'up'})
-
-    def test_catchDeviceLogs(self):
-        """需要在capabilities里添加配置{appium:getDeviceLogs': True, 'appium:getDeviceLogsToPath': 'D:\\test'}
-        getDeviceLogs，设为True抓取日志，设为False不抓取日志；
-        getDeviceLogsToPath，可选将设备日志拉到指定目录（适用于用例运行环境和设备接入环境是在同一台电脑），若未指定路径，则会返回日志的zip压缩文件流
-        """
-        # 使用方式1
-        self.driver.execute_script('mobile: getDeviceLogs', {})
-
-        # 使用方式2
-        # logItems: dict，可选配置抓取多个路径下的日志
-        # key是日志路径可以是文件，也可以是目录；value是创建子文件夹保存拉取得日志，设为空，表示不使用子文件夹
-        # self.driver.execute_script(
-        #     'mobile: getDeviceLogs', {'logItems': {'path1': '', 'path2': 'onfolder'}})
-
-        # 使用方式3
-        # 返回zip压缩文件流
-        # ret = self.driver.execute_script('mobile: getDeviceLogs', {})
-        # with open('D:\\test.zip', "wb") as fzip:
-        #     data = bytes(ret.get('data'))
-        #     fzip.write(data)
 
     def test_recording_screen(self):
         self.driver.start_recording_screen()

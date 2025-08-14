@@ -16,3 +16,11 @@ export interface WebviewsMapping {
    * ```
    */
 }
+
+export interface LogEntry {
+  timestamp: number;
+  level: 'ALL';
+  message: string;
+}
+
+export type LogListener = (logEntry: LogEntry) => any;

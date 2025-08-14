@@ -230,6 +230,12 @@ export const executeMethodMap = {
       optional: ['waitForWebviewMs'],
     },
   },
+  'mobile: startLogsBroadcast': {
+    command: 'startLogsBroadcast',
+  },
+  'mobile: stopLogsBroadcast': {
+    command: 'stopLogsBroadcast',
+  },
 } as const;
 
 export type HarmonyosExecuteMethodMap = typeof executeMethodMap;
