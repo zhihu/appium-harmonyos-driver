@@ -11,6 +11,9 @@ const HARMONY_DRIVER_CONSTRAINTS = {
   getDeviceLogsToPath: {
     isString: true,
   },
+  skipHilogCapture: {
+    isBoolean: true,
+  },
   platformName: {
     isString: true,
     inclusionCaseInsensitive: ['Harmony', 'HarmonyOS'],
