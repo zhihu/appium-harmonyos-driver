@@ -7,3 +7,4 @@ package-lock.json*
 yalc.lock
 .idea
 .venv
+javaclient/target
