@@ -577,7 +577,7 @@ driver.pull_file('/data/local/tmp/test.txt')
 
 ```python
 # 返回zip压缩包的base64字符串
-ret = driver.pull_file('/data/local/tmp')
+ret = driver.pull_folder('/data/local/tmp')
 with ZipFile(BytesIO(base64.b64decode(ret))) as fzip:
     for filename in fzip.namelist():
         print(filename)
