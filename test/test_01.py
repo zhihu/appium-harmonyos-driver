@@ -244,7 +244,6 @@ class TestAppium(unittest.TestCase):
             'mobile: multipleClickGesture', {'x': 900, 'y': 450, 'times': 4})
 
         # 使用方式3
-        # 使用方式2
         el = self.driver.find_element('text', value='蓝牙')
         self.driver.execute_script(
             'mobile: multipleClickGesture', {'elementId': el.id})
@@ -309,7 +308,6 @@ class TestAppium(unittest.TestCase):
         ret = self.driver.stop_recording_screen()
         with open('D:\\test.mp4', 'wb') as mp4_file:
             mp4_file.write(base64.b64decode(ret))
-
 
     def test_intputText(self):
         # 输入文本

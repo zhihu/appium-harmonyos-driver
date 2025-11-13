@@ -161,8 +161,8 @@ class HarmonyDriver
 
   static executeMethodMap = executeMethodMap;
 
-  caps: HarmonyDriverCaps;
-  opts: HarmonyDriverOpts;
+  declare caps: HarmonyDriverCaps;
+  declare opts: HarmonyDriverOpts;
   driver: UiDriver;
 
   componentCache: UiComponentCache;

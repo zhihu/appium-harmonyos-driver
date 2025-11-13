@@ -48,8 +48,6 @@ Capability Name | Description
 platformName | 固定填写harmonyos
 appium:automationName | 固定填写harmonyos
 appium:udid | 在指定SN的设备上运行，不指定SN，则使用hdc list targets列出的第一个设备
-appium:getDeviceLogs | 是否抓取设备日志，true抓取，false不抓取
-appium:getDeviceLogsToPath | 将设备日志拉到指定目录，如D:\test
 appium:waitForWebviewMs | 等待webview时间
 chromedriverExecutableDir | 配置chromedriver的文件目录
 
@@ -438,31 +436,6 @@ driver.orientation = 'LANDSCAPE'
 
 # 设置为竖屏
 driver.orientation = 'PORTRAIT'
-```
-
-### 获取设备日志
-参数说明：
-- logItems, 传参为字典，除hilog外，还需额外拉取的文件。key可以是文件路径，也可以是目录；value是创建子文件夹保存拉取的文件，设为空，表示不使用子文件夹
-
-```python
-capabilities = {
-    # 是否抓取设备日志, True/False
-    'appium:getDeviceLogs': True,
-    # 将设备日志拉到指定目录（适用于用例运行环境和设备接入环境是在同一台电脑），若未指定路径，则会返回日志的zip压缩文件流
-    'appium:getDeviceLogsToPath': 'D:\\test'
-}
-
-# 使用方式1
-driver.execute_script('mobile: getDeviceLogs', {})
-
-# 使用方式2
-driver.execute_script('mobile: getDeviceLogs', {'logItems': {'path1': '', 'path2': 'onfolder'}})
-
-# 使用方式3
-ret = driver.execute_script('mobile: getDeviceLogs', {})
-with open('D:\\test.zip', "wb") as fzip:
-    data = bytes(ret.get('data'))
-    fzip.write(data)
 ```
 
 ### 获取设备时间
